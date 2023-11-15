@@ -10,11 +10,19 @@ public class SkinPar :MonoBehaviour
     public Image TumbImg;
     public TextMeshProUGUI SkinName;
     public Material Mat;
+    public GameObject Obj;
     private void Start()
     {
-        
-        But = GetComponent<Button>();
-        But.onClick.AddListener(() =>GarageManager.Instance.ChangeSkin(Mat,SkinName.text));
+        if (Mat != null)
+        {
+            But = GetComponent<Button>();
+            But.onClick.AddListener(() => GarageManager.Instance.ChangeSkin( SkinName.text));
+        }
+        else
+        {
+            But = GetComponent<Button>();
+            But.onClick.AddListener(() => GarageManager.Instance.ChangePilot( SkinName.text));
+        }
     }
 
 }

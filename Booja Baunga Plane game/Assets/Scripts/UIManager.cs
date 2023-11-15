@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,9 +11,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] string MeanUI;
     [Header("Buttons")]
     [SerializeField] List<_ButtonFind> Buttons; 
-    [SerializeField] Button PlayBut;
-    [SerializeField] Button GarageBut;
-    [SerializeField] Button MainMenuBut;
     [Header("UIObject")]
     [SerializeField] List<UiObjects> UI;
     #endregion
@@ -21,6 +19,10 @@ public class UIManager : MonoBehaviour
     #region Unity Function
     private void Start()
     {
+        for(int i =0;i < GameObject.Find("Canvas").transform.childCount; i++)
+        {
+            GameObject.Find("Canvas").transform.GetChild(i).gameObject.SetActive(true);
+        }
         DontDestroyOnLoad(this);
         UI.Clear();
         foreach (var obj in GameObject.FindGameObjectsWithTag("Menu"))
@@ -33,7 +35,10 @@ public class UIManager : MonoBehaviour
         {
             Buttons.Add(new _ButtonFind(item.GetComponent<Button>(),item.name));
         }
-        foreach(var But in Buttons)
+
+
+
+        foreach (var But in Buttons)
         {
             But.But.onClick.AddListener(() => UIChange(But.ButName));
         }
@@ -68,18 +73,61 @@ public class UIManager : MonoBehaviour
     }
     private void UIChange(string name)
     {
-        foreach (var item in UI)
+        if (name.Contains("SET"))
         {
-            item.GameObject.SetActive(false);
-        }
-        if (name.Contains("ChS"))
-        {
-            string[] a = name.Split("ChS");
-            SceneManager.LoadSceneAsync(a[1]);
+            string Nam = name.Replace("SET","");
+            SETBTN(Nam);
         }
         else
         {
-            UI.Find(x => x.Name == name).GameObject.SetActive(true);
+            foreach (var item in UI)
+            {
+                item.GameObject.SetActive(false);
+            }
+            if (name.Contains("ChS"))
+            {
+                string[] a = name.Split("ChS");
+                SceneManager.LoadSceneAsync(a[1]);
+            }
+            else
+            {
+                if(name == "Menu")
+                {
+                    GarageManager.Instance.ChangePilot(PlayerPrefs.GetString("ChosenPilotName"));
+                    GarageManager.Instance.ChangeSkin(PlayerPrefs.GetString("ChosenSkinName"));
+                }
+                UI.Find(x => x.Name == name).GameObject.SetActive(true);
+            }
+        }
+    }
+
+
+    public void SETBTN(string ButName)
+    {
+        switch (ButName)
+        {
+            //Save
+            case "Save": 
+                GarageManager.Instance.SaveSkin();
+                break;
+            //RestartSettings
+            case "Reset":
+                SettingsManager.instance.Restart();
+                break;
+            //SaveSettings
+            case "Apply":
+                SettingsManager.instance.APPLY();
+                break;
+            //PlainColor change graph
+            case "Collor": 
+                GarageManager.Instance.CollorGraph();
+                break;
+            //PlainPilot change graph
+            case "Pilot":
+                GarageManager.Instance.PilotGraph();
+                break;
+            default: 
+                break;
         }
     }
     #endregion

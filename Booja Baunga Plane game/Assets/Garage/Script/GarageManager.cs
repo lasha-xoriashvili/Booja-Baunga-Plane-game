@@ -13,9 +13,22 @@ public class GarageManager : MonoBehaviour
     [SerializeField] GameObject AirPlanObj;
 
     [Header("Skins")]
+    [SerializeField] Image ColorGraphBut;
+    [SerializeField] GameObject PlaneSkinsGraph;
     [SerializeField] GameObject SkinObj;
     [SerializeField] List<ParForSkin> AirPlanMaterial;
     [SerializeField] Transform Content;
+
+    [Header("pilot")]
+    [SerializeField] GameObject PilotSkinsGraph;
+    [SerializeField] Image PilotGraphBut;
+    [SerializeField] Transform ContentForPilot;
+    [SerializeField] Transform PilotPos;
+    [SerializeField] GameObject pilot;
+    [SerializeField] List<ParForPilot> PilotObjs;
+
+    private string SkinName;
+    private string PilotName;
     #endregion
 
 
@@ -23,13 +36,26 @@ public class GarageManager : MonoBehaviour
     private void Start()
     {
         Instance = this;
-        
-        //AirPlan Skin Changer
+        SpownPilotObj();
         SpownSkinsObj();
+        CollorGraph();
         if (PlayerPrefs.HasKey("ChosenSkinName"))
         {
             AirPlanObj.GetComponent<Renderer>().material = AirPlanMaterial.Find(x => x.skinname == PlayerPrefs.GetString("ChosenSkinName")).skinMat;
             PlaneParametrs.PleanMat = AirPlanObj.GetComponent<Renderer>().material;
+        }
+        else
+        {
+            AirPlanObj.GetComponent<Renderer>().material = AirPlanMaterial[0].skinMat;
+            PlaneParametrs.PleanMat = AirPlanObj.GetComponent<Renderer>().material;
+        }
+        if (PlayerPrefs.HasKey("ChosenPilotName"))
+        {
+            pilot = Instantiate(PilotObjs.Find(x => x.skinname == PlayerPrefs.GetString("ChosenPilotName")).skinObj, PilotPos.position,Quaternion.identity);
+        }
+        else
+        {
+            pilot = Instantiate(PilotObjs[0].skinObj, PilotPos.transform.position,Quaternion.identity);
         }
     }
     private void Update()
@@ -40,11 +66,37 @@ public class GarageManager : MonoBehaviour
     #endregion
 
     #region Engine Function
-    public void ChangeSkin(Material NewMat,string name)
+    public void ChangeSkin(string name)
     {
-        AirPlanObj.GetComponent<Renderer>().material = NewMat;
-        PlaneParametrs.PleanMat = NewMat;
-        PlayerPrefs.SetString("ChosenSkinName", name);
+        if (name != null)
+        {
+            AirPlanObj.GetComponent<Renderer>().material = AirPlanMaterial.Find(x => x.skinname == name).skinMat;
+            SkinName = name;
+        }
+    }
+    public void ChangePilot( string name)
+    {
+        if (name != null)
+        {
+            if (pilot != null)
+            {
+                Destroy(pilot);
+            }
+            pilot = Instantiate(PilotObjs.Find(x => x.skinname == name).skinObj, PilotPos.transform.position, Quaternion.identity);
+            PilotName = name;
+        }
+    }
+    public void SaveSkin()
+    {
+        if (SkinName != null)
+        {
+            PlaneParametrs.PleanMat = AirPlanMaterial.Find(x => x.skinname == SkinName).skinMat;
+            PlayerPrefs.SetString("ChosenSkinName", SkinName);
+        }
+        if(PilotName != null)
+        {
+            PlayerPrefs.SetString("ChosenPilotName", PilotName);
+        }
     }
     public void SpownSkinsObj()
     {
@@ -56,6 +108,31 @@ public class GarageManager : MonoBehaviour
             skin.GetComponent<SkinPar>().SkinName.text = AirPlanMaterial[i].skinname;
         }
     }
+    public void SpownPilotObj()
+    {
+        for (int i = 0; i < PilotObjs.Count; i++)
+        {
+            GameObject skin = Instantiate(SkinObj, ContentForPilot);
+            skin.GetComponent<SkinPar>().Obj = PilotObjs[i].skinObj;
+            skin.GetComponent<SkinPar>().TumbImg.sprite = PilotObjs[i].SkinImage;
+            skin.GetComponent<SkinPar>().SkinName.text = PilotObjs[i].skinname;
+        }
+    }
+
+    public void CollorGraph()
+    {
+        ColorGraphBut.color = Color.clear;
+        PilotGraphBut.color = Color.white;
+        PilotSkinsGraph.SetActive(false);
+        PlaneSkinsGraph.SetActive(true);
+    }
+    public void PilotGraph()
+    {
+        ColorGraphBut.color = Color.white;
+        PilotGraphBut.color = Color.clear;
+        PilotSkinsGraph.SetActive(true);
+        PlaneSkinsGraph.SetActive(false);
+    }
     
 
     #endregion
@@ -64,6 +141,13 @@ public class GarageManager : MonoBehaviour
 public class ParForSkin
 {
     public Material skinMat;
+    public string skinname;
+    public Sprite SkinImage;
+}
+[System.Serializable]
+public class ParForPilot
+{
+    public GameObject skinObj;
     public string skinname;
     public Sprite SkinImage;
 }

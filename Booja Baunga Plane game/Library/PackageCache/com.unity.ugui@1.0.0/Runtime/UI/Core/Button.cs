@@ -16,7 +16,13 @@ namespace UnityEngine.UI
         /// <summary>
         /// Function definition for a button click event.
         /// </summary>
-        public class ButtonClickedEvent : UnityEvent {}
+        public class ButtonClickedEvent : UnityEvent
+        {
+            public void AddListener(object v)
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         // Event delegates triggered on click.
         [FormerlySerializedAs("onClick")]

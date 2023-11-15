@@ -362,6 +362,7 @@
 "Assets/Plain/Script/PlainEngine.cs"
 "Assets/Scripts/CameraManager.cs"
 "Assets/Scripts/UIManager.cs"
+"Assets/SettingsManager.cs"
 -langversion:9.0
 
 /deterministic

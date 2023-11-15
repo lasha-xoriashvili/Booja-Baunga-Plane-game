@@ -10,16 +10,16 @@ public class GarageCamera : MonoBehaviour
     [SerializeField] GameObject TargetPos;
     [SerializeField] GameObject Garage;
 
-    float rotate;
+    public float rotate;
+    public float rotateY;
+    
     public float SpeedScrol;
 
-    public float max, min;
     #endregion
 
     #region Unity Function
     private void Start()
     {
-        rotate = min;
     }
     private void FixedUpdate()
     {
@@ -51,7 +51,7 @@ public class GarageCamera : MonoBehaviour
 
         //_camera.transform.Rotate(new Vector3(1, 0, 0), angle: Direction.y * 180);
         _camera.transform.Rotate(new Vector3(0, 1, 0), angle: -Direction.x * 180,Space.World);
-        _camera.transform.Translate(new Vector3(0, 0, -10));
+        _camera.transform.Translate(new Vector3(0, rotateY, -rotate));
         PreviousPosition = _camera.ScreenToViewportPoint(Input.mousePosition);
     }
     #endregion
