@@ -51,7 +51,7 @@ public class GarageManager : MonoBehaviour
         }
         if (PlayerPrefs.HasKey("ChosenPilotName"))
         {
-            pilot = Instantiate(PilotObjs.Find(x => x.skinname == PlayerPrefs.GetString("ChosenPilotName")).skinObj, PilotPos.position,Quaternion.identity);
+            ChangePilot(PlayerPrefs.GetString("ChosenPilotName"));
         }
         else
         {
@@ -84,6 +84,7 @@ public class GarageManager : MonoBehaviour
             }
             pilot = Instantiate(PilotObjs.Find(x => x.skinname == name).skinObj, PilotPos.transform.position, Quaternion.identity);
             PilotName = name;
+            PlaneParametrs.Pilot = PilotObjs.Find(x => x.skinname == name).SkinImage;
         }
     }
     public void SaveSkin()
